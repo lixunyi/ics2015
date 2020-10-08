@@ -2,22 +2,34 @@
 #include <stdlib.h>
 #include <time.h>
 
+// 初始化一个cpu结构体
 CPU_state cpu;
 
+const char *regsL[] = {"EAX", "ECX", "EDX", "EBX", "ESP", "EBP", "ESI", "EDI"};
 const char *regsl[] = {"eax", "ecx", "edx", "ebx", "esp", "ebp", "esi", "edi"};
 const char *regsw[] = {"ax", "cx", "dx", "bx", "sp", "bp", "si", "di"};
 const char *regsb[] = {"al", "cl", "dl", "bl", "ah", "ch", "dh", "bh"};
 
+const char *seg_regs[] = {"es", "cs", "ss", "ds", "fs", "gs"}; // R_ES, R_CS, R_SS, R_DS, R_FS, R_GS 
+
 void reg_test() {
-	srand(time(0));
-	uint32_t sample[8];
-	uint32_t eip_sample = rand();
+
+#ifndef DEBUG
+    return;
+#endif
+
+	srand(time(0));//随机数生成器
+	uint32_t sample[8];// ??
+	uint32_t eip_sample = rand();//随机生存一个32位的无符号正整数
 	cpu.eip = eip_sample;
 
+	// 循环给所有寄存器都初始化一个32位的值
 	int i;
 	for(i = R_EAX; i <= R_EDI; i ++) {
-		sample[i] = rand();
-		reg_l(i) = sample[i];
+		sample[i] = rand();//创建一个随机的32位的随机数
+		reg_l(i) = sample[i];// 将创建的随机数赋值给 指定寄存器容器gpr中的32位存储值
+		//截取sample里面的后4位来做对比
+		// 因为上面一行代码 将32位随机数给了_32 变量，由于将结构体改成了共用体的关系，会共享内存
 		assert(reg_w(i) == (sample[i] & 0xffff));
 	}
 
@@ -39,6 +51,7 @@ void reg_test() {
 	assert(sample[R_ESI] == cpu.esi);
 	assert(sample[R_EDI] == cpu.edi);
 
+	
 	assert(eip_sample == cpu.eip);
 }
 
