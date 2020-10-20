@@ -34,9 +34,9 @@ typedef struct {
 	    struct {
 	        uint32_t EAX, ECX, EDX, EBX, ESP, EBP, ESI, EDI;
 	    };
-	}
+	};
 	    
-		swaddr_t eip;
+	swaddr_t eip;
 
 } CPU_state;
 
